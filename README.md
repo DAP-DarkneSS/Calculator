@@ -15,6 +15,7 @@ DONE
 
 TODO
  * validation of
-   - who knows
+   - spaces
  * calculation with
+   - bitwise operations
    - functions from math
