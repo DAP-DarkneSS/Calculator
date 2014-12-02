@@ -1,8 +1,4 @@
 #!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-# Let's reject python >= 3 and use unicode.
-
-#===============================================================#"
 
 # A Python2 calculator for EPAM linux cource.
 # Copyright (C) 2014 Dmitriy A. Perlow <dap.darkness@gmail.com>
@@ -27,10 +23,17 @@
 
 #===============================================================#"
 
+# -*- coding: utf-8 -*-
+# Let's reject python >= 3 and use unicode.
+
+#===============================================================#"
+
 global DigitsStringsList
 DigitsStringsList = []
 for i in xrange(10):
     DigitsStringsList.append(str(i))
+
+import math
 
 #===============================================================#"
 
@@ -65,13 +68,13 @@ def validateDecimalPoint(InputString):
 
 def validateParenthesis(InputString):
     '''Puts multiplication signs around parenthesis if required.'''
-    
+
     if InputString.count("(") != InputString.count(")"):
         raise ValueError("'(' and ')' counts differ.")
 
     i = 1
     while i < (len(InputString) - 2):
-        if (InputString[(i - 1)] in DigitsStringsList) and (InputString[i] == "("):
+        if (InputString[(i - 1)] in DigitsStringsList) and (InputString[i] == "(") and (not doesItContainFunction(InputString[(i + 1):], MustEndWith = True)):
             InputString = InputString[:i] + "*" + InputString[i:]
             i += 2
         else:
@@ -92,7 +95,7 @@ def validateParenthesis(InputString):
 #===============================================================#"
 
 def validateSigns(InputString):
-    '''Cancels multiple signs out or raises ValueError if required.'''
+    '''Cancels multiple signs out if required.'''
 
     for i in ("***", "*/", "/*", "///", "+*", "+/", "-*", "-/"):
         if i in InputString:
@@ -108,8 +111,35 @@ def validateSigns(InputString):
 
 #===============================================================#"
 
-def calculateIt(InputString):
-    '''Calculates input string expression to output string value.'''
+    def doesItContainFunction(InputString, MustEndWith = False):
+        '''True when input string contains (optional: ends with) a math function.'''
+
+        def doesItContainString(InputString, StringToFind, MustEndWith):
+            '''True when input string contains or ends with another one.'''
+            OutputBoolean = False
+            if StringToFind in InputString:
+                OutputBoolean = True
+                if MustEndWith and (not InputString.endswith(StringToFind)):
+                    OutputBoolean = False
+            return(OutputBoolean)
+
+        OutputBoolean = False
+        MathFunctionsStringsList = dir(math)
+        del MathFunctionsStringsList[:4]
+
+        i = 0
+        while (not OutputBoolean) and (i < len(OutputBoolean)):
+            if doesItContainString(InputString, MathFunctionsStringsList[i], MustEndWith):
+                OutputBoolean = True
+            else:
+                i += 1
+
+        return(OutputBoolean)
+
+#===============================================================#"
+
+def calculateArithmetic(InputString):
+    '''Calculates input simple arithmetical string expression to output string value.'''
 
     OperatorsList = ("**", "*", "/", "%", "//", "+", "-")
 
@@ -157,15 +187,22 @@ def calculateIt(InputString):
 
 #===============================================================#"
 
-InputString = raw_input('Please type a string to calculate: ')
-InputString = validateDecimalPoint(InputString)
-InputString = validateParenthesis(InputString)
+def calculateIt(InputString):
+    '''Calculates any (the description is a lie) string expression to output string value.'''
+
+    while "(" in InputString:
+        ClosingIndex = InputString.find(")")
+        OpeningIndex = ClosingIndex - InputString[ClosingIndex::-1].find("(")
+        InputString = InputString.replace(InputString[OpeningIndex:(ClosingIndex + 1)], calculateArithmetic(InputString[(OpeningIndex + 1):ClosingIndex]))
+
+    return(InputString)
 
 #===============================================================#"
 
-while "(" in InputString:
-    ClosingIndex = InputString.find(")")
-    OpeningIndex = ClosingIndex - InputString[ClosingIndex::-1].find("(")
-    InputString = InputString.replace(InputString[OpeningIndex:(ClosingIndex + 1)], calculateIt(InputString[(OpeningIndex + 1):ClosingIndex]))
+InputString = raw_input("Please type a string to calculate: ")
+
+InputString = validateDecimalPoint(InputString)
+InputString = validateParenthesis(InputString)
+InputString = calculateIt(InputString)
 
 print(InputString)
