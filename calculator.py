@@ -32,6 +32,7 @@ global DigitsStringsList
 DigitsStringsList = []
 for i in xrange(10):
     DigitsStringsList.append(str(i))
+del(i)
 
 import math
 
@@ -111,30 +112,30 @@ def validateSigns(InputString):
 
 #===============================================================#"
 
-    def doesItContainFunction(InputString, MustEndWith = False):
-        '''True when input string contains (optional: ends with) a math function.'''
+def doesItContainFunction(InputString, MustEndWith = False):
+    '''True when input string contains (optional: ends with) a math function.'''
 
-        def doesItContainString(InputString, StringToFind, MustEndWith):
-            '''True when input string contains or ends with another one.'''
-            OutputBoolean = False
-            if StringToFind in InputString:
-                OutputBoolean = True
-                if MustEndWith and (not InputString.endswith(StringToFind)):
-                    OutputBoolean = False
-            return(OutputBoolean)
-
+    def doesItContainString(InputString, StringToFind, MustEndWith):
+        '''True when input string contains or ends with another one.'''
         OutputBoolean = False
-        MathFunctionsStringsList = dir(math)
-        del MathFunctionsStringsList[:4]
-
-        i = 0
-        while (not OutputBoolean) and (i < len(OutputBoolean)):
-            if doesItContainString(InputString, MathFunctionsStringsList[i], MustEndWith):
-                OutputBoolean = True
-            else:
-                i += 1
-
+        if StringToFind in InputString:
+            OutputBoolean = True
+            if MustEndWith and (not InputString.endswith(StringToFind)):
+                OutputBoolean = False
         return(OutputBoolean)
+
+    OutputBoolean = False
+    MathFunctionsStringsList = dir(math)
+    del MathFunctionsStringsList[:4]
+
+    i = 0
+    while (not OutputBoolean) and (i < len(OutputBoolean)):
+        if doesItContainString(InputString, MathFunctionsStringsList[i], MustEndWith):
+            OutputBoolean = True
+        else:
+            i += 1
+
+    return(OutputBoolean)
 
 #===============================================================#"
 
@@ -188,7 +189,10 @@ def calculateArithmetic(InputString):
 #===============================================================#"
 
 def calculateIt(InputString):
-    '''Calculates any (the description is a lie) string expression to output string value.'''
+    '''Calculates any (the description is a lie) input string expression to output string value.'''
+
+    InputString = validateDecimalPoint(InputString)
+    InputString = validateParenthesis(InputString)
 
     while "(" in InputString:
         ClosingIndex = InputString.find(")")
@@ -199,10 +203,5 @@ def calculateIt(InputString):
 
 #===============================================================#"
 
-InputString = raw_input("Please type a string to calculate: ")
-
-InputString = validateDecimalPoint(InputString)
-InputString = validateParenthesis(InputString)
-InputString = calculateIt(InputString)
-
-print(InputString)
+if __name__ == '__main__':
+    print(calculateIt(raw_input("Please type a string to calculate: ")))
