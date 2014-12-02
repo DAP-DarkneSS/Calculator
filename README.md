@@ -10,6 +10,8 @@ DONE
    + division
    + addition
    + diminution
+   + integer division
+   + residue of division
 
 TODO
  * validation of

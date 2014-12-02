@@ -94,7 +94,7 @@ def validateParenthesis(InputString):
 def validateSigns(InputString):
     '''Cancels multiple signs out or raises ValueError if required.'''
 
-    for i in ("***", "*/", "/*", "//", "+*", "+/", "-*", "-/"):
+    for i in ("***", "*/", "/*", "///", "+*", "+/", "-*", "-/"):
         if i in InputString:
             raise ValueError("Too many signs. Fix validateSigns() if wrong.")
 
@@ -111,12 +111,12 @@ def validateSigns(InputString):
 def calculateIt(InputString):
     '''Calculates input string expression to output string value.'''
 
-    OperatorsList = ("**", "*", "/", "+", "-")
+    OperatorsList = ("**", "*", "/", "%", "//", "+", "-")
 
     for j in OperatorsList:
         InputString = validateSigns(InputString)
 
-        if ("*" in InputString) or ("/" in InputString) or ((InputString.count("+") + InputString.count("-")) > 1) or (InputString.find("+") > 0) or (InputString.find("-") > 0):
+        if ("*" in InputString) or ("/" in InputString) or ("%" in InputString) or ((InputString.count("+") + InputString.count("-")) > 1) or (InputString.find("+") > 0) or (InputString.find("-") > 0):
             while j in InputString:
                 FirstNumberStartsAt = SecondNumberEndsAt = OperatorIndex = InputString.find(j)
 
@@ -142,6 +142,10 @@ def calculateIt(InputString):
                     CalculatedNumber = FirstNumber * SecondNumber
                 elif j == "/":
                     CalculatedNumber = FirstNumber / SecondNumber
+                elif j == "//":
+                    CalculatedNumber = FirstNumber // SecondNumber
+                elif j == "%":
+                    CalculatedNumber = FirstNumber % SecondNumber
                 elif j == "+":
                     CalculatedNumber = FirstNumber + SecondNumber
                 elif j == "-":
@@ -150,7 +154,6 @@ def calculateIt(InputString):
                 InputString = InputString.replace(InputString[FirstNumberStartsAt:SecondNumberEndsAt], str(CalculatedNumber))
 
     return(InputString)
-
 
 #===============================================================#"
 
