@@ -215,6 +215,7 @@ def calculateArithmetic(InputString):
 def calculateIt(InputString):
     '''Calculates any (the description is a lie) input string expression to output string value.'''
 
+    InputString = InputString.replace(" ", "")
     InputString = validateDecimalPoint(InputString)
     InputString = validateParenthesis(InputString)
 

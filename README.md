@@ -3,6 +3,7 @@ DONE
    + decimal points
    + parenthesis
    + signs
+   + spaces
  * calculation with
    + parenthesis
    + exponentiation
@@ -20,6 +21,6 @@ DONE
 
 TODO
  * validation of
-   - spaces
+   -
  * calculation with
    - functions from math
