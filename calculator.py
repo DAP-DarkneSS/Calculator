@@ -162,8 +162,8 @@ def calculateArithmetic(InputString):
         InputString = validateSigns(InputString)
 
         if not isItANumber(InputString, OperatorsList):
-            while j in InputString:
-                FirstNumberStartsAt = SecondNumberEndsAt = OperatorIndex = InputString.find(j)
+            while j in InputString and not ((InputString[0] == j) and (InputString.count(j) == 1)):
+                FirstNumberStartsAt = SecondNumberEndsAt = OperatorIndex = (InputString[1:].find(j) + 1)
 
                 i = OperatorIndex + len(j)
                 while SecondNumberEndsAt == OperatorIndex:
@@ -174,8 +174,13 @@ def calculateArithmetic(InputString):
 
                 i = OperatorIndex - 1
                 while FirstNumberStartsAt == OperatorIndex:
-                    if (i == -1) or (InputString[i] in OperatorsList):
+                    if i == -1:
                         FirstNumberStartsAt = i + 1
+                    elif InputString[i] in OperatorsList:
+                        if (i == 0) or (InputString[i-1] in OperatorsList):
+                            FirstNumberStartsAt = i
+                        else:
+                            FirstNumberStartsAt = i + 1
                     else:
                         i -= 1
 
