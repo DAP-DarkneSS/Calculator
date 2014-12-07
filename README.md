@@ -12,10 +12,14 @@ DONE
    + diminution
    + integer division
    + residue of division
+   + bitwise operation <<
+   + bitwise operation >>
+   + bitwise and
+   + bitwise or
+   + bitwise exclusive or
 
 TODO
  * validation of
    - spaces
  * calculation with
-   - bitwise operations
    - functions from math

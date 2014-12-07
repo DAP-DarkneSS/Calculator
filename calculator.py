@@ -98,10 +98,6 @@ def validateParenthesis(InputString):
 def validateSigns(InputString):
     '''Cancels multiple signs out if required.'''
 
-    for i in ("***", "*/", "/*", "///", "+*", "+/", "-*", "-/"):
-        if i in InputString:
-            raise ValueError("Too many signs. Fix validateSigns() if wrong.")
-
     while ("++" in InputString) or ("+-" in InputString) or ("-+" in InputString) or ("--" in InputString):
         InputString = InputString.replace("++", "+")
         InputString = InputString.replace("+-", "-")
@@ -142,12 +138,30 @@ def doesItContainFunction(InputString, MustEndWith = False):
 def calculateArithmetic(InputString):
     '''Calculates input simple arithmetical string expression to output string value.'''
 
-    OperatorsList = ("**", "*", "/", "%", "//", "+", "-")
+    OperatorsList = ("**", "*", "/", "%", "//", "+", "-", "<<", ">>", "&", "|", "^")
+
+    def isItANumber(InputString, OperatorsList):
+        '''Returns True if input string is a number.'''
+        OutputBoolean = True
+        i = 0
+        while OutputBoolean and (i < len(OperatorsList)):
+            if (OperatorsList[i] != "+") and (OperatorsList[i] != "-"):
+                if OperatorsList[i] in InputString:
+                    OutputBoolean = False
+            else:
+                if (InputString.count("+") + InputString.count("-")) > 1:
+                    OutputBoolean = False
+                else:
+                    if InputString.find(OperatorsList[i]) > 0:
+                        OutputBoolean = False
+            if OutputBoolean:
+                i += 1
+        return(OutputBoolean)
 
     for j in OperatorsList:
         InputString = validateSigns(InputString)
 
-        if ("*" in InputString) or ("/" in InputString) or ("%" in InputString) or ((InputString.count("+") + InputString.count("-")) > 1) or (InputString.find("+") > 0) or (InputString.find("-") > 0):
+        if not isItANumber(InputString, OperatorsList):
             while j in InputString:
                 FirstNumberStartsAt = SecondNumberEndsAt = OperatorIndex = InputString.find(j)
 
@@ -181,6 +195,16 @@ def calculateArithmetic(InputString):
                     CalculatedNumber = FirstNumber + SecondNumber
                 elif j == "-":
                     CalculatedNumber = FirstNumber - SecondNumber
+                elif j == "<<":
+                    CalculatedNumber = FirstNumber << SecondNumber
+                elif j == ">>":
+                    CalculatedNumber = FirstNumber >> SecondNumber
+                elif j == "&":
+                    CalculatedNumber = FirstNumber & SecondNumber
+                elif j == "|":
+                    CalculatedNumber = FirstNumber | SecondNumber
+                elif j == "^":
+                    CalculatedNumber = FirstNumber ^ SecondNumber
 
                 InputString = InputString.replace(InputString[FirstNumberStartsAt:SecondNumberEndsAt], str(CalculatedNumber))
 
