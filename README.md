@@ -21,6 +21,6 @@ DONE
 
 TODO
  * validation of
-   -
+   - functions from math
  * calculation with
    - functions from math
