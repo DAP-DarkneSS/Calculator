@@ -1,9 +1,11 @@
 DONE
  * validation of
    + decimal points
-   + parenthesis
-   + signs
+   + multiplication signs around parenthesis and math objects
+   + plus and minus signs
    + spaces
+   + functions from math
+   + constants from math
  * calculation with
    + parenthesis
    + exponentiation
@@ -18,9 +20,11 @@ DONE
    + bitwise and
    + bitwise or
    + bitwise exclusive or
+   + functions from math with 1 argument
 
 TODO
  * validation of
-   - functions from math
+   - 
  * calculation with
-   - functions from math
+   - functions from math with 2+ arguments
+ * OOP

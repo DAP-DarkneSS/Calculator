@@ -32,6 +32,17 @@ for i in xrange(10):
     DigitsStringsList.append(str(i))
 del(i)
 
+global MathFunctionsStringsList
+MathFunctionsStringsList = ("abs", "acos", "acosh", "asin", "asinh", "atan", "atanh",
+                            "cxil", "cos", "cosh",
+                            "dxgrxxs",
+                            "xrf", "xrfc", "xxp", "xxpmone",
+                            "gamma",
+                            "lgamma", "log", "logonep", "logten",
+                            "fabs", "factorial", "floor",
+                            "radians",
+                            "sin", "sinh", "sqrt",
+                            "tan", "tanh", "trunc")
 import math
 
 #===============================================================#"
@@ -65,25 +76,34 @@ def validateDecimalPoint(InputString):
 
 #===============================================================#"
 
-def validateMathAndEtc(InputString):
-    '''Replaces `pi` & `e` by proper numbers.'''
+def validateMathFunctions(InputString):
+    '''Renames some problematical math functions.'''
 
-    i = InputString.find("e")
-
-    while (i >= 0) and (i < len(InputString)):
-        if not doesItContainFunction(InputString[(i - 5):(i + 6)]): # FIXME e*exp() → ?
-            InputString = InputString[:i] + str(math.e) + InputString[(i + 1):] # FIXME 0e1 → 0*e*1
-
-        i = InputString.find("e", (i + 1))
-
-    InputString = InputString.replace("pi", str(math.pi)) # FIXME 0pi1 → 0*pi*1
+    InputString = InputString.replace("ceil", "cxil")
+    InputString = InputString.replace("degrees", "dxgrxxs")
+    InputString = InputString.replace("erf", "xrf")
+    InputString = InputString.replace("erfc", "xrfc")
+    InputString = InputString.replace("exp", "xxp")
+    InputString = InputString.replace("expm1", "xxpmone")
+    InputString = InputString.replace("log1p", "logonep")
+    InputString = InputString.replace("log10", "logten")
 
     return(InputString)
 
 #===============================================================#"
 
-def validateParenthesis(InputString):
-    '''Puts multiplication signs around parenthesis if required.'''
+def validateMathConstants(InputString):
+    '''Replaces `pi` & `e` by proper numbers.'''
+
+    InputString = InputString.replace("e", str(math.e))
+    InputString = InputString.replace("pi", str(math.pi))
+
+    return(InputString)
+
+#===============================================================#"
+
+def validateMultiplication(InputString):
+    '''Puts multiplication signs around parenthesis and math objects if required.'''
 
     if InputString.count("(") != InputString.count(")"):
         raise ValueError("'(' and ')' counts differ.")
@@ -104,13 +124,20 @@ def validateParenthesis(InputString):
         else:
             i += 1
 
+    for i in (MathFunctionsStringsList + ("e", "pi")):
+        j = InputString.find(i, 1)
+        while (j > 0) and (j < len(InputString)):
+            if (InputString[j - 1] == ")") or (InputString[j - 1] in DigitsStringsList):
+                InputString = InputString[:j] + "*" + InputString[j:]
+            j = InputString.find(i, (j + 1))
+
 # Hello, the first kludge!
     InputString = "(" + InputString + ")"
     return(InputString)
 
 #===============================================================#"
 
-def validateSigns(InputString):
+def validatePlusMinus(InputString):
     '''Cancels multiple signs out if required.'''
 
     while ("++" in InputString) or ("+-" in InputString) or ("-+" in InputString) or ("--" in InputString):
@@ -136,16 +163,6 @@ def doesItContainFunction(InputString, MustEndWith = False):
         return(OutputBoolean)
 
     OutputBoolean = False
-    MathFunctionsStringsList = ("abs", "acos", "acosh", "asin", "asinh", "atan", "atanh",
-                                "ceil", "cos", "cosh",
-                                "degrees",
-                                "erf", "erfc", "exp", "expm1",
-                                "gamma",
-                                "lgamma", "log", "log1p", "log10",
-                                "fabs", "factorial", "floor",
-                                "radians",
-                                "sin", "sinh", "sqrt",
-                                "tan", "tanh", "trunc")
 
     i = 0
     while (not OutputBoolean) and (i < len(MathFunctionsStringsList)):
@@ -182,7 +199,7 @@ def calculateArithmetic(InputString):
         return(OutputBoolean)
 
     for j in OperatorsList:
-        InputString = validateSigns(InputString)
+        InputString = validatePlusMinus(InputString)
 
         if not isItANumber(InputString, OperatorsList):
             while j in InputString and not ((InputString[0] == j) and (InputString.count(j) == 1)):
@@ -190,7 +207,7 @@ def calculateArithmetic(InputString):
 
                 i = OperatorIndex + len(j)
                 while SecondNumberEndsAt == OperatorIndex:
-                    if (i == len(InputString)) or (InputString[i] in OperatorsList):
+                    if (i == len(InputString)) or (InputString[i] in OperatorsList): # FIXME 2*-2 → ValueError
                         SecondNumberEndsAt = i
                     else:
                         i += 1
@@ -208,7 +225,7 @@ def calculateArithmetic(InputString):
                         i -= 1
 
                 FirstNumber = float(InputString[FirstNumberStartsAt:OperatorIndex])
-                SecondNumber = float (InputString[(OperatorIndex + len(j)):SecondNumberEndsAt])
+                SecondNumber = float(InputString[(OperatorIndex + len(j)):SecondNumberEndsAt])
                 if j == "**":
                     CalculatedNumber = FirstNumber ** SecondNumber
                 elif j == "*":
@@ -245,8 +262,9 @@ def calculateIt(InputString):
 
     InputString = InputString.replace(" ", "")
     InputString = validateDecimalPoint(InputString)
-    InputString = validateMathAndEtc(InputString)
-    InputString = validateParenthesis(InputString)
+    InputString = validateMathFunctions(InputString)
+    InputString = validateMultiplication(InputString)
+    InputString = validateMathConstants(InputString)
 
     while "(" in InputString:
         ClosingIndex = InputString.find(")")
@@ -276,7 +294,7 @@ def calculateIt(InputString):
             elif InputString[(OpeningIndex - 5):OpeningIndex] == "atanh":
                 TempString = str(math.atanh(float(TempString)))
                 OpeningIndex -= 5
-            elif InputString[(OpeningIndex - 4):OpeningIndex] == "ceil":
+            elif InputString[(OpeningIndex - 4):OpeningIndex] == "cxil":
                 TempString = str(math.ceil(float(TempString)))
                 OpeningIndex -= 4
             elif InputString[(OpeningIndex - 3):OpeningIndex] == "cos":
@@ -285,19 +303,19 @@ def calculateIt(InputString):
             elif InputString[(OpeningIndex - 4):OpeningIndex] == "cosh":
                 TempString = str(math.cosh(float(TempString)))
                 OpeningIndex -= 4
-            elif InputString[(OpeningIndex - 7):OpeningIndex] == "degrees":
+            elif InputString[(OpeningIndex - 7):OpeningIndex] == "dxgrxxs":
                 TempString = str(math.degrees(float(TempString)))
                 OpeningIndex -= 7
-            elif InputString[(OpeningIndex - 3):OpeningIndex] == "erf":
+            elif InputString[(OpeningIndex - 3):OpeningIndex] == "xrf":
                 TempString = str(math.erf(float(TempString)))
                 OpeningIndex -= 3
-            elif InputString[(OpeningIndex - 4):OpeningIndex] == "erfc":
+            elif InputString[(OpeningIndex - 4):OpeningIndex] == "xrfc":
                 TempString = str(math.erfc(float(TempString)))
                 OpeningIndex -= 4
-            elif InputString[(OpeningIndex - 3):OpeningIndex] == "exp":
+            elif InputString[(OpeningIndex - 3):OpeningIndex] == "xxp":
                 TempString = str(math.exp(float(TempString)))
                 OpeningIndex -= 3
-            elif InputString[(OpeningIndex - 5):OpeningIndex] == "expm1":
+            elif InputString[(OpeningIndex - 5):OpeningIndex] == "xxpmone":
                 TempString = str(math.expm1(float(TempString)))
                 OpeningIndex -= 5
             elif InputString[(OpeningIndex - 5):OpeningIndex] == "gamma":
@@ -309,10 +327,10 @@ def calculateIt(InputString):
             elif InputString[(OpeningIndex - 3):OpeningIndex] == "log":
                 TempString = str(math.log(float(TempString)))
                 OpeningIndex -= 3
-            elif InputString[(OpeningIndex - 5):OpeningIndex] == "log1p":
+            elif InputString[(OpeningIndex - 5):OpeningIndex] == "logonep":
                 TempString = str(math.log1p(float(TempString)))
                 OpeningIndex -= 5
-            elif InputString[(OpeningIndex - 5):OpeningIndex] == "log10":
+            elif InputString[(OpeningIndex - 5):OpeningIndex] == "logten":
                 TempString = str(math.log10(float(TempString)))
                 OpeningIndex -= 5
             elif InputString[(OpeningIndex - 4):OpeningIndex] == "fabs":
