@@ -374,6 +374,9 @@ def calculateIt(InputString):
 #===============================================================#"
 
 if __name__ == '__main__':
-    print(calculateIt(raw_input("Please type a string to calculate: ")))
-    "1*4+3.3/(3 + .3)*3(sqrt(4))/(sin(0) + 1)3" # TODO
-    "10*e^0*log10(.4* -5/ -0.1-10) - -abs(-53//10) + -5" # FIXME ValueError
+    TempString = raw_input("Please type a string to calculate: ")
+    if TempString == "":
+        print(calculateIt("1*4+3.3/(3 + .3)*3(sqrt(4))/(sin(0) + 1)3"))
+        print(calculateIt("10*e^0*log10(.4* -5/ -0.1-10) - -abs(-53//10) + -5")) # FIXME ValueError
+    else:
+        print(calculateIt(TempString))
