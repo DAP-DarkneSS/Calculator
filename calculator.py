@@ -161,7 +161,7 @@ def doesItContainFunction(InputString, MustEndWith = False):
 def calculateArithmetic(InputString):
     '''Calculates input simple arithmetical string expression to output string value.'''
 
-    OperatorsList = ("**", "*", "/", "%", "//", "+", "-", "<<", ">>", "&", "|", "^")
+    OperatorsList = ("**", "*", "//", "/", "%", "+", "-", "<<", ">>", "&", "|", "^")
 
     def isItANumber(InputString, OperatorsList):
         '''Returns True if input string is a number.'''
