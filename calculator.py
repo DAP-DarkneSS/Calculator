@@ -33,13 +33,15 @@ for i in xrange(10):
 del(i)
 
 global MathFunctionsStringsList
-MathFunctionsStringsList = ("abs", "acos", "acosh", "asin", "asinh", "atan", "atanh",
-                            "cxil", "cos", "cosh",
+MathFunctionsStringsList = ("abs", "acos", "acosh", "asin", "asinh", "atan", "atanT", "atanh",
+                            "cxil", "copysign", "cos", "cosh",
                             "dxgrxxs",
                             "xrf", "xrfc", "xxp", "xxpmO",
+                            "fabs", "factorial", "floor", "fmod",
                             "gamma",
-                            "lgamma", "log", "logOp", "logT",
-                            "fabs", "factorial", "floor",
+                            "hypot",
+                            "ldxxp", "lgamma", "log", "logOp", "logT",
+                            "pow",
                             "radians",
                             "sin", "sinh", "sqrt",
                             "tan", "tanh", "trunc")
@@ -79,12 +81,14 @@ def validateDecimalPoint(InputString):
 def validateMathFunctions(InputString):
     '''Renames some problematical math functions.'''
 
+    InputString = InputString.replace("atan2", "atanT")
     InputString = InputString.replace("ceil", "cxil")
     InputString = InputString.replace("degrees", "dxgrxxs")
     InputString = InputString.replace("erf", "xrf")
     InputString = InputString.replace("erfc", "xrfc")
     InputString = InputString.replace("exp", "xxp")
     InputString = InputString.replace("expm1", "xxpmO")
+    InputString = InputString.replace("ldexp", "ldxxp")
     InputString = InputString.replace("log1p", "logOp")
     InputString = InputString.replace("log10", "logT")
 
@@ -270,99 +274,123 @@ def calculateIt(InputString):
     while "(" in InputString:
         ClosingIndex = InputString.find(")")
         OpeningIndex = ClosingIndex - InputString[ClosingIndex::-1].find("(")
-        TempString = calculateArithmetic(InputString[(OpeningIndex + 1):ClosingIndex])
+        TempList = InputString[(OpeningIndex + 1):ClosingIndex].split(",")
+        TempListLen = len(TempList)
+        for i in xrange(TempListLen):
+            TempList[i] = calculateArithmetic(TempList[i])
 
         if doesItContainFunction(InputString[:OpeningIndex], MustEndWith = True):
 
             if InputString[(OpeningIndex - 3):OpeningIndex] == "abs":
-                TempString = str(abs(float(TempString)))
+                TempString = str(abs(float(TempList[0])))
                 OpeningIndex -= 3
             elif InputString[(OpeningIndex - 4):OpeningIndex] == "acos":
-                TempString = str(math.acos(float(TempString)))
+                TempString = str(math.acos(float(TempList[0])))
                 OpeningIndex -= 4
             elif InputString[(OpeningIndex - 5):OpeningIndex] == "acosh":
-                TempString = str(math.acosh(float(TempString)))
+                TempString = str(math.acosh(float(TempList[0])))
                 OpeningIndex -= 5
             elif InputString[(OpeningIndex - 4):OpeningIndex] == "asin":
-                TempString = str(math.asin(float(TempString)))
+                TempString = str(math.asin(float(TempList[0])))
                 OpeningIndex -= 4
             elif InputString[(OpeningIndex - 5):OpeningIndex] == "asinh":
-                TempString = str(math.asinh(float(TempString)))
+                TempString = str(math.asinh(float(TempList[0])))
                 OpeningIndex -= 5
             elif InputString[(OpeningIndex - 4):OpeningIndex] == "atan":
-                TempString = str(math.atan(float(TempString)))
+                TempString = str(math.atan(float(TempList[0])))
                 OpeningIndex -= 4
+            elif InputString[(OpeningIndex - 5):OpeningIndex] == "atanT":
+                TempString = str(math.atan2(float(TempList[0]), float(TempList[1])))
+                OpeningIndex -= 5
             elif InputString[(OpeningIndex - 5):OpeningIndex] == "atanh":
-                TempString = str(math.atanh(float(TempString)))
+                TempString = str(math.atanh(float(TempList[0])))
                 OpeningIndex -= 5
             elif InputString[(OpeningIndex - 4):OpeningIndex] == "cxil":
-                TempString = str(math.ceil(float(TempString)))
+                TempString = str(math.ceil(float(TempList[0])))
                 OpeningIndex -= 4
+            elif InputString[(OpeningIndex - 8):OpeningIndex] == "copysign":
+                TempString = str(math.copysign(float(TempList[0]), float(TempList[1])))
+                OpeningIndex -= 8
             elif InputString[(OpeningIndex - 3):OpeningIndex] == "cos":
-                TempString = str(math.cos(float(TempString)))
+                TempString = str(math.cos(float(TempList[0])))
                 OpeningIndex -= 3
             elif InputString[(OpeningIndex - 4):OpeningIndex] == "cosh":
-                TempString = str(math.cosh(float(TempString)))
+                TempString = str(math.cosh(float(TempList[0])))
                 OpeningIndex -= 4
             elif InputString[(OpeningIndex - 7):OpeningIndex] == "dxgrxxs":
-                TempString = str(math.degrees(float(TempString)))
+                TempString = str(math.degrees(float(TempList[0])))
                 OpeningIndex -= 7
             elif InputString[(OpeningIndex - 3):OpeningIndex] == "xrf":
-                TempString = str(math.erf(float(TempString)))
+                TempString = str(math.erf(float(TempList[0])))
                 OpeningIndex -= 3
             elif InputString[(OpeningIndex - 4):OpeningIndex] == "xrfc":
-                TempString = str(math.erfc(float(TempString)))
+                TempString = str(math.erfc(float(TempList[0])))
                 OpeningIndex -= 4
             elif InputString[(OpeningIndex - 3):OpeningIndex] == "xxp":
-                TempString = str(math.exp(float(TempString)))
+                TempString = str(math.exp(float(TempList[0])))
                 OpeningIndex -= 3
             elif InputString[(OpeningIndex - 5):OpeningIndex] == "xxpmO":
-                TempString = str(math.expm1(float(TempString)))
+                TempString = str(math.expm1(float(TempList[0])))
                 OpeningIndex -= 5
-            elif InputString[(OpeningIndex - 5):OpeningIndex] == "gamma":
-                TempString = str(math.gamma(float(TempString)))
-                OpeningIndex -= 5
-            elif InputString[(OpeningIndex - 6):OpeningIndex] == "lgamma":
-                TempString = str(math.lgamma(float(TempString)))
-                OpeningIndex -= 6
-            elif InputString[(OpeningIndex - 3):OpeningIndex] == "log":
-                TempString = str(math.log(float(TempString)))
-                OpeningIndex -= 3
-            elif InputString[(OpeningIndex - 5):OpeningIndex] == "logOp":
-                TempString = str(math.log1p(float(TempString)))
-                OpeningIndex -= 5
-            elif InputString[(OpeningIndex - 4):OpeningIndex] == "logT":
-                TempString = str(math.log10(float(TempString)))
-                OpeningIndex -= 4
             elif InputString[(OpeningIndex - 4):OpeningIndex] == "fabs":
-                TempString = str(math.fabs(float(TempString)))
+                TempString = str(math.fabs(float(TempList[0])))
                 OpeningIndex -= 4
             elif InputString[(OpeningIndex - 9):OpeningIndex] == "factorial":
-                TempString = str(math.factorial(float(TempString)))
+                TempString = str(math.factorial(float(TempList[0])))
                 OpeningIndex -= 9
             elif InputString[(OpeningIndex - 5):OpeningIndex] == "floor":
-                TempString = str(math.floor(float(TempString)))
+                TempString = str(math.floor(float(TempList[0])))
                 OpeningIndex -= 5
+            elif InputString[(OpeningIndex - 4):OpeningIndex] == "fmod":
+                TempString = str(math.fmod(float(TempList[0]), float(TempList[1])))
+                OpeningIndex -= 4
+            elif InputString[(OpeningIndex - 5):OpeningIndex] == "gamma":
+                TempString = str(math.gamma(float(TempList[0])))
+                OpeningIndex -= 5
+            elif InputString[(OpeningIndex - 5):OpeningIndex] == "hypot":
+                TempString = str(math.hypot(float(TempList[0]), float(TempList[1])))
+                OpeningIndex -= 5
+            elif InputString[(OpeningIndex - 5):OpeningIndex] == "ldxxp":
+                TempString = str(math.ldexp(float(TempList[0]), float(TempList[1])))
+                OpeningIndex -= 5
+            elif InputString[(OpeningIndex - 6):OpeningIndex] == "lgamma":
+                TempString = str(math.lgamma(float(TempList[0])))
+                OpeningIndex -= 6
+            elif InputString[(OpeningIndex - 3):OpeningIndex] == "log":
+                if TempListLen >= 2:
+                    TempString = str(math.log(float(TempList[0]), float(TempList[1])))
+                else:
+                    TempString = str(math.log(float(TempList[0])))
+                OpeningIndex -= 3
+            elif InputString[(OpeningIndex - 5):OpeningIndex] == "logOp":
+                TempString = str(math.log1p(float(TempList[0])))
+                OpeningIndex -= 5
+            elif InputString[(OpeningIndex - 4):OpeningIndex] == "logT":
+                TempString = str(math.log10(float(TempList[0])))
+                OpeningIndex -= 4
+            elif InputString[(OpeningIndex - 3):OpeningIndex] == "pow":
+                TempString = str(math.pow(float(TempList[0]), float(TempList[1])))
+                OpeningIndex -= 3
             elif InputString[(OpeningIndex - 7):OpeningIndex] == "radians":
-                TempString = str(math.radians(float(TempString)))
+                TempString = str(math.radians(float(TempList[0])))
                 OpeningIndex -= 7
             elif InputString[(OpeningIndex - 3):OpeningIndex] == "sin":
-                TempString = str(math.sin(float(TempString)))
+                TempString = str(math.sin(float(TempList[0])))
                 OpeningIndex -= 3
             elif InputString[(OpeningIndex - 4):OpeningIndex] == "sinh":
-                TempString = str(math.sinh(float(TempString)))
+                TempString = str(math.sinh(float(TempList[0])))
                 OpeningIndex -= 4
             elif InputString[(OpeningIndex - 4):OpeningIndex] == "sqrt":
-                TempString = str(math.sqrt(float(TempString)))
+                TempString = str(math.sqrt(float(TempList[0])))
                 OpeningIndex -= 4
             elif InputString[(OpeningIndex - 3):OpeningIndex] == "tan":
-                TempString = str(math.tan(float(TempString)))
+                TempString = str(math.tan(float(TempList[0])))
                 OpeningIndex -= 3
             elif InputString[(OpeningIndex - 4):OpeningIndex] == "tanh":
-                TempString = str(math.tanh(float(TempString)))
+                TempString = str(math.tanh(float(TempList[0])))
                 OpeningIndex -= 4
             elif InputString[(OpeningIndex - 5):OpeningIndex] == "trunc":
-                TempString = str(math.trunc(float(TempString)))
+                TempString = str(math.trunc(float(TempList[0])))
                 OpeningIndex -= 5
 
         else:

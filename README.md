@@ -23,8 +23,5 @@ DONE
    + functions from math with 1 argument
 
 TODO
- * validation of
-   - 
- * calculation with
-   - functions from math with 2+ arguments
+ * correct operator precedence
  * OOP
