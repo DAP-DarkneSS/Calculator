@@ -205,9 +205,10 @@ def calculateArithmetic(InputString):
             while j in InputString and not ((InputString[0] == j) and (InputString.count(j) == 1)):
                 FirstNumberStartsAt = SecondNumberEndsAt = OperatorIndex = (InputString[1:].find(j) + 1)
 
-                i = OperatorIndex + len(j)
+                i = OperatorIndex + len(j) + 1
+# +1 to pass unary +/- sign.
                 while SecondNumberEndsAt == OperatorIndex:
-                    if (i == len(InputString)) or (InputString[i] in OperatorsList): # FIXME 2*-2 → ValueError
+                    if (i == len(InputString)) or (InputString[i] in OperatorsList):
                         SecondNumberEndsAt = i
                     else:
                         i += 1
