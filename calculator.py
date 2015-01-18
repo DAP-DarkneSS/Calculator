@@ -331,9 +331,9 @@ def calculateIt(InputString):
             elif InputString[(OpeningIndex - 5):OpeningIndex] == "logOp":
                 TempString = str(math.log1p(float(TempString)))
                 OpeningIndex -= 5
-            elif InputString[(OpeningIndex - 5):OpeningIndex] == "logT":
+            elif InputString[(OpeningIndex - 4):OpeningIndex] == "logT":
                 TempString = str(math.log10(float(TempString)))
-                OpeningIndex -= 5
+                OpeningIndex -= 4
             elif InputString[(OpeningIndex - 4):OpeningIndex] == "fabs":
                 TempString = str(math.fabs(float(TempString)))
                 OpeningIndex -= 4
