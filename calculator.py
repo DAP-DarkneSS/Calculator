@@ -242,15 +242,15 @@ def calculateArithmetic(InputString):
                 elif j == "-":
                     CalculatedNumber = FirstNumber - SecondNumber
                 elif j == "<<":
-                    CalculatedNumber = FirstNumber << SecondNumber
+                    CalculatedNumber = int(FirstNumber) << int(SecondNumber)
                 elif j == ">>":
-                    CalculatedNumber = FirstNumber >> SecondNumber
+                    CalculatedNumber = int(FirstNumber) >> int(SecondNumber)
                 elif j == "&":
-                    CalculatedNumber = FirstNumber & SecondNumber
+                    CalculatedNumber = int(FirstNumber) & int(SecondNumber)
                 elif j == "|":
-                    CalculatedNumber = FirstNumber | SecondNumber
+                    CalculatedNumber = int(FirstNumber) | int(SecondNumber)
                 elif j == "^":
-                    CalculatedNumber = FirstNumber ^ SecondNumber
+                    CalculatedNumber = int(FirstNumber) ^ int(SecondNumber)
 
                 InputString = InputString.replace(InputString[FirstNumberStartsAt:SecondNumberEndsAt], str(CalculatedNumber))
 
@@ -378,6 +378,6 @@ if __name__ == '__main__':
     TempString = raw_input("Please type a string to calculate: ")
     if TempString == "":
         print(calculateIt("1*4+3.3/(3 + .3)*3(sqrt(4))/(sin(0) + 1)3"))
-        print(calculateIt("10*e^0*log10(.4* -5/ -0.1-10) - -abs(-53//10) + -5")) # FIXME ValueError
+        print(calculateIt("10*e^0*log10(.4* -5/ -0.1-10) - -abs(-53//10) + -5"))
     else:
         print(calculateIt(TempString))
