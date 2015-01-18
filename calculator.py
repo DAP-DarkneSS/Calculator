@@ -36,9 +36,9 @@ global MathFunctionsStringsList
 MathFunctionsStringsList = ("abs", "acos", "acosh", "asin", "asinh", "atan", "atanh",
                             "cxil", "cos", "cosh",
                             "dxgrxxs",
-                            "xrf", "xrfc", "xxp", "xxpmone",
+                            "xrf", "xrfc", "xxp", "xxpmO",
                             "gamma",
-                            "lgamma", "log", "logonep", "logten",
+                            "lgamma", "log", "logOp", "logT",
                             "fabs", "factorial", "floor",
                             "radians",
                             "sin", "sinh", "sqrt",
@@ -84,9 +84,9 @@ def validateMathFunctions(InputString):
     InputString = InputString.replace("erf", "xrf")
     InputString = InputString.replace("erfc", "xrfc")
     InputString = InputString.replace("exp", "xxp")
-    InputString = InputString.replace("expm1", "xxpmone")
-    InputString = InputString.replace("log1p", "logonep")
-    InputString = InputString.replace("log10", "logten")
+    InputString = InputString.replace("expm1", "xxpmO")
+    InputString = InputString.replace("log1p", "logOp")
+    InputString = InputString.replace("log10", "logT")
 
     return(InputString)
 
@@ -315,7 +315,7 @@ def calculateIt(InputString):
             elif InputString[(OpeningIndex - 3):OpeningIndex] == "xxp":
                 TempString = str(math.exp(float(TempString)))
                 OpeningIndex -= 3
-            elif InputString[(OpeningIndex - 5):OpeningIndex] == "xxpmone":
+            elif InputString[(OpeningIndex - 5):OpeningIndex] == "xxpmO":
                 TempString = str(math.expm1(float(TempString)))
                 OpeningIndex -= 5
             elif InputString[(OpeningIndex - 5):OpeningIndex] == "gamma":
@@ -327,10 +327,10 @@ def calculateIt(InputString):
             elif InputString[(OpeningIndex - 3):OpeningIndex] == "log":
                 TempString = str(math.log(float(TempString)))
                 OpeningIndex -= 3
-            elif InputString[(OpeningIndex - 5):OpeningIndex] == "logonep":
+            elif InputString[(OpeningIndex - 5):OpeningIndex] == "logOp":
                 TempString = str(math.log1p(float(TempString)))
                 OpeningIndex -= 5
-            elif InputString[(OpeningIndex - 5):OpeningIndex] == "logten":
+            elif InputString[(OpeningIndex - 5):OpeningIndex] == "logT":
                 TempString = str(math.log10(float(TempString)))
                 OpeningIndex -= 5
             elif InputString[(OpeningIndex - 4):OpeningIndex] == "fabs":
