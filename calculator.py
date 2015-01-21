@@ -24,29 +24,41 @@
 
 # Let's reject python >= 3 and use unicode.
 
+import argparse
 from Calculator.calc import Calculator
 
 
 if __name__ == '__main__':
 
-    TempString = raw_input("Please type a string to calculate: ")
-    if TempString == "":
+    ShellParser = argparse.ArgumentParser()
+    ShellParser.add_argument("-f",
+                             "--file",
+                             default="input.txt",
+                             help="input file name.")
+    ShellParser.add_argument("-v",
+                             "--verbose",
+                             default=False,
+                             action="store_true",
+                             help="print also input string, not result only.")
+    ShellArguments = ShellParser.parse_args()
+
+    try:
+        with open(ShellArguments.file) as InputFile:
+            TempList = InputFile.read().splitlines()
+    except:
+        TempList = []
+        TempList.append(raw_input("Please type a string to calculate (press Enter to calculate buildin tuple): "))
+        if TempList[0] == "":
+            del(TempList[0])
+    if TempList == []:
+        TempList = ("1*4+3.3/(3 + .3)*3(sqrt(4))/(sin(0) + 1)3",
+                    "10*e^0*log10(.4* -5/ -0.1-10) - -abs(-53//10) + -5")
+    for i in TempList:
         try:
-            with open("input.txt") as InputFile:
-                TempList = InputFile.read().splitlines()
-        except:
-            TempList = []
-        if TempList == []:
-            TempList = ("1*4+3.3/(3 + .3)*3(sqrt(4))/(sin(0) + 1)3",
-                        "10*e^0*log10(.4* -5/ -0.1-10) - -abs(-53//10) + -5")
-        for i in TempList:
-            try:
-                TempObject = Calculator(i)
-                TempObject.calculateIt()
-                print(TempObject + " = " + TempObject.InputString)
-            except Exception as ExceptionMessage:
-                print(ExceptionMessage)
-    else:
-        TempObject = Calculator(TempString)
-        TempObject.calculateIt()
-        print(TempObject + " = " + TempObject.InputString)
+            TempObject = Calculator(i)
+            TempObject.calculateIt()
+            if ShellArguments.verbose:
+                TempObject.InputString = TempObject + " = " + TempObject.InputString
+            print(TempObject.InputString)
+        except Exception as ExceptionMessage:
+            print(ExceptionMessage)

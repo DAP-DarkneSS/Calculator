@@ -23,7 +23,7 @@ DONE
    + functions from math with 1 argument
  * OOP
  * file calculation
+ * file from shell
 
 TODO
  * correct operator precedence
- * file from shell
