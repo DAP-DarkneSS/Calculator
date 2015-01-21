@@ -35,7 +35,7 @@ class Calculator(Validator):
         '''Calculates input simple arithmetical string expression to output string value.'''
 
         for j in OperatorsList:
-            self.InputString = self.validatePlusMinus()
+            self.validatePlusMinus()
 
             if not isItANumber(self.InputString, OperatorsList):
                 while j in self.InputString and not ((self.InputString[0] == j) and (self.InputString.count(j) == 1)):
@@ -95,11 +95,11 @@ class Calculator(Validator):
     def calculateIt(self):
         '''Calculates any (the description is a lie) input string expression to output string value.'''
 
-        self.InputString = self.validateSpaces()
-        self.InputString = self.validateDecimalPoint()
-        self.InputString = self.validateMathFunctions()
-        self.InputString = self.validateMultiplication()
-        self.InputString = self.validateMathConstants()
+        self.validateSpaces()
+        self.validateDecimalPoint()
+        self.validateMathFunctions()
+        self.validateMultiplication()
+        self.validateMathConstants()
 
         while "(" in self.InputString:
             ClosingIndex = self.InputString.find(")")
@@ -107,7 +107,9 @@ class Calculator(Validator):
             TempList = self.InputString[(OpeningIndex + 1):ClosingIndex].split(",")
             TempListLen = len(TempList)
             for i in xrange(TempListLen):
-                TempList[i] = calculateArithmetic(TempList[i])
+                TempList[i] = Calculator(TempList[i])
+                TempList[i].calculateArithmetic()
+                TempList[i] = TempList[i].InputString
 
             if doesItContainFunction(self.InputString[:OpeningIndex], MustEndWith = True):
 
@@ -225,5 +227,6 @@ class Calculator(Validator):
 
             else:
                 StartIndex = OpeningIndex
+                TempString = TempList[0]
 
             self.InputString = self.InputString.replace(self.InputString[OpeningIndex:(ClosingIndex + 1)], TempString)

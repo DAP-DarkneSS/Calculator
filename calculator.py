@@ -31,10 +31,10 @@ if __name__ == '__main__':
     if TempString == "":
         for i in ("1*4+3.3/(3 + .3)*3(sqrt(4))/(sin(0) + 1)3",
                   "10*e^0*log10(.4* -5/ -0.1-10) - -abs(-53//10) + -5"):
-            MetaObject = Calculator(i)
-            MetaObject.calculateIt()
-            print(MetaObject + " = " + MetaObject.InputString)
+            TempObject = Calculator(i)
+            TempObject.calculateIt()
+            print(TempObject + " = " + TempObject.InputString)
     else:
-        MetaObject = Calculator(TempString)
-        MetaObject.calculateIt()
-        print(MetaObject + " = " + MetaObject.InputString)
+        TempObject = Calculator(TempString)
+        TempObject.calculateIt()
+        print(TempObject + " = " + TempObject.InputString)

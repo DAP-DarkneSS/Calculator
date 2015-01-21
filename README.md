@@ -21,7 +21,9 @@ DONE
    + bitwise or
    + bitwise exclusive or
    + functions from math with 1 argument
+ * OOP
 
 TODO
  * correct operator precedence
- * OOP
+ * file calculation
+ * file from shell

@@ -24,6 +24,7 @@
 
 # Let's reject python >= 3 and use unicode.
 
+import math
 from stuff import *
 
 class Validator(str):
@@ -35,9 +36,7 @@ class Validator(str):
     def validateSpaces(self):
         '''Just now it simply deletes them.'''
 
-        print(self.InputString)
         self.InputString = self.InputString.replace(" ", "")
-        print(self.InputString)
 
 
     def validateDecimalPoint(self):
