@@ -27,6 +27,7 @@
 import math
 from stuff import *
 
+
 class Validator(str):
     '''A general input validation class.'''
 

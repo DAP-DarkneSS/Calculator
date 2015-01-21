@@ -28,6 +28,7 @@ from val import Validator
 from stuff import *
 import math
 
+
 class Calculator(Validator):
     '''A general calculation class.'''
 

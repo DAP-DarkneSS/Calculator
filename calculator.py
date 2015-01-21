@@ -26,14 +26,26 @@
 
 from Calculator.calc import Calculator
 
+
 if __name__ == '__main__':
+
     TempString = raw_input("Please type a string to calculate: ")
     if TempString == "":
-        for i in ("1*4+3.3/(3 + .3)*3(sqrt(4))/(sin(0) + 1)3",
-                  "10*e^0*log10(.4* -5/ -0.1-10) - -abs(-53//10) + -5"):
-            TempObject = Calculator(i)
-            TempObject.calculateIt()
-            print(TempObject + " = " + TempObject.InputString)
+        try:
+            with open("input.txt") as InputFile:
+                TempList = InputFile.read().splitlines()
+        except:
+            TempList = []
+        if TempList == []:
+            TempList = ("1*4+3.3/(3 + .3)*3(sqrt(4))/(sin(0) + 1)3",
+                        "10*e^0*log10(.4* -5/ -0.1-10) - -abs(-53//10) + -5")
+        for i in TempList:
+            try:
+                TempObject = Calculator(i)
+                TempObject.calculateIt()
+                print(TempObject + " = " + TempObject.InputString)
+            except Exception as ExceptionMessage:
+                print(ExceptionMessage)
     else:
         TempObject = Calculator(TempString)
         TempObject.calculateIt()
