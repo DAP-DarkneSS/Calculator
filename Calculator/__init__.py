@@ -23,18 +23,3 @@
 # You could contact me with e-mail or jabber dap.darkness@gmail.com
 
 # Let's reject python >= 3 and use unicode.
-
-from Calculator.calc import Calculator
-
-if __name__ == '__main__':
-    TempString = raw_input("Please type a string to calculate: ")
-    if TempString == "":
-        for i in ("1*4+3.3/(3 + .3)*3(sqrt(4))/(sin(0) + 1)3",
-                  "10*e^0*log10(.4* -5/ -0.1-10) - -abs(-53//10) + -5"):
-            MetaObject = Calculator(i)
-            MetaObject.calculateIt()
-            print(MetaObject + " = " + MetaObject.InputString)
-    else:
-        MetaObject = Calculator(TempString)
-        MetaObject.calculateIt()
-        print(MetaObject + " = " + MetaObject.InputString)
