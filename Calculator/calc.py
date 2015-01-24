@@ -92,8 +92,9 @@ class Calculator(Validator):
                 "%": self.InputString.find("%")}
             OperatorIndex = max(OperatorsDict.values())
             for i in OperatorsDict.keys():
-                if (OperatorsDict[i] == OperatorIndex):
+                if (OperatorsDict[i] <= OperatorIndex) and (OperatorsDict[i] >= 0):
                     Operator = i
+                    OperatorIndex = OperatorsDict[i]
             if self.InputString[OperatorIndex + 1] == "/":
                 Operator = "//"
                 OperatorSymbolsCount = 2
@@ -119,11 +120,12 @@ class Calculator(Validator):
             OperatorsDict = {
                 "+": (self.InputString[1:].find("+") +1),
                 "-": (self.InputString[1:].find("-") +1)}
-# '1:' & '+1' to pass an unary sign.
+# '1:' & '+1' to pass an unary sign. NOTE: not found = 0!
             OperatorIndex = max(OperatorsDict.values())
             for i in OperatorsDict.keys():
-                if (OperatorsDict[i] == OperatorIndex):
+                if (OperatorsDict[i] <= OperatorIndex) and (OperatorsDict[i] > 0):
                     Operator = i
+                    OperatorIndex = OperatorsDict[i]
             OperatorSymbolsCount = 1
             FirstNumberStartsAt = where1NumberStarts(self.InputString, OperatorIndex)
             SecondNumberEndsAt = where2NumberEnds(self.InputString, OperatorIndex, OperatorSymbolsCount)
@@ -143,8 +145,9 @@ class Calculator(Validator):
                 ">>": self.InputString.find(">>")}
             OperatorIndex = max(OperatorsDict.values())
             for i in OperatorsDict.keys():
-                if (OperatorsDict[i] == OperatorIndex):
+                if (OperatorsDict[i] <= OperatorIndex) and (OperatorsDict[i] >= 0):
                     Operator = i
+                    OperatorIndex = OperatorsDict[i]
             OperatorSymbolsCount = 2
             FirstNumberStartsAt = where1NumberStarts(self.InputString, OperatorIndex)
             SecondNumberEndsAt = where2NumberEnds(self.InputString, OperatorIndex, OperatorSymbolsCount)
@@ -175,8 +178,9 @@ class Calculator(Validator):
                 "|": self.InputString.find("|")}
             OperatorIndex = max(OperatorsDict.values())
             for i in OperatorsDict.keys():
-                if (OperatorsDict[i] == OperatorIndex):
+                if (OperatorsDict[i] <= OperatorIndex) and (OperatorsDict[i] >= 0):
                     Operator = i
+                    OperatorIndex = OperatorsDict[i]
             OperatorSymbolsCount = 1
             FirstNumberStartsAt = where1NumberStarts(self.InputString, OperatorIndex)
             SecondNumberEndsAt = where2NumberEnds(self.InputString, OperatorIndex, OperatorSymbolsCount)
