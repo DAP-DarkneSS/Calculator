@@ -27,7 +27,6 @@ DONE
  * file from shell
 
 TODO
- * correct operator precedence
  * bitwise float exception
  * tests
  

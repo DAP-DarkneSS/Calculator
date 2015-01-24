@@ -35,71 +35,161 @@ class Calculator(Validator):
     def calculateArithmetic(self):
         '''Calculates input simple arithmetical string expression to output string value.'''
 
-        for j in OperatorsList:
-            self.validatePlusMinus()
-
-            if not isItANumber(self.InputString):
-                while j in self.InputString and not ((self.InputString[0] == j) and (self.InputString.count(j) == 1) and (j in ("-", "+"))):
-                    if j in ("-", "+"):
-                        StartIndex = 1
+        def where1NumberStarts(InputString, OperatorIndex):
+            '''Returns input string index.'''
+            FirstNumberStartsAt = OperatorIndex
+            i = OperatorIndex - 1
+            while FirstNumberStartsAt == OperatorIndex:
+                if i == -1:
+                    FirstNumberStartsAt = 0
+                elif InputString[i] in OperatorsList:
+                    if (i == 0) or (InputString[i-1] in OperatorsList):
+                        FirstNumberStartsAt = i
                     else:
-                        StartIndex = 0
-                    FirstNumberStartsAt = SecondNumberEndsAt = OperatorIndex = (self.InputString[StartIndex:].find(j) + StartIndex)
+                        FirstNumberStartsAt = i + 1
+                else:
+                    i -= 1
+            return(FirstNumberStartsAt)
 
-                    i = OperatorIndex + len(j) + 1
+        def where2NumberEnds(InputString, OperatorIndex, OperatorSymbolsCount):
+            '''Returns input string index.'''
+            SecondNumberEndsAt = OperatorIndex
+            i = OperatorIndex + OperatorSymbolsCount + 1
 # +1 to pass unary +/- sign.
-                    while SecondNumberEndsAt == OperatorIndex:
-                        if (i == len(self.InputString)) or (self.InputString[i] in OperatorsList):
-                            SecondNumberEndsAt = i
-                        else:
-                            i += 1
+            while SecondNumberEndsAt == OperatorIndex:
+                if (i == len(InputString)) or (InputString[i] in OperatorsList):
+                    SecondNumberEndsAt = i
+                else:
+                    i += 1
+            return(SecondNumberEndsAt)
 
-                    i = OperatorIndex - 1
-                    while (FirstNumberStartsAt == OperatorIndex and j != "~"):
-                        if i == -1:
-                            FirstNumberStartsAt = i + 1
-                        elif self.InputString[i] in OperatorsList:
-                            if (i == 0) or (self.InputString[i-1] in OperatorsList):
-                                FirstNumberStartsAt = i
-                            else:
-                                FirstNumberStartsAt = i + 1
-                        else:
-                            i -= 1
+        while "**" in self.InputString:
+            self.validatePlusMinus()
+            OperatorSymbolsCount = 2
+            OperatorIndex = self.InputString.find("**")
+            FirstNumberStartsAt = where1NumberStarts(self.InputString, OperatorIndex)
+            SecondNumberEndsAt = where2NumberEnds(self.InputString, OperatorIndex, OperatorSymbolsCount)
+            FirstNumber = float(self.InputString[FirstNumberStartsAt:OperatorIndex])
+            SecondNumber = float(self.InputString[(OperatorIndex + OperatorSymbolsCount):SecondNumberEndsAt])
+            CalculationResult = str(FirstNumber ** SecondNumber)
+            self.InputString = self.InputString.replace(self.InputString[FirstNumberStartsAt:SecondNumberEndsAt], CalculationResult)
 
-                    if j != "~":
-                        FirstNumber = float(self.InputString[FirstNumberStartsAt:OperatorIndex])
-                    SecondNumber = float(self.InputString[(OperatorIndex + len(j)):SecondNumberEndsAt])
-                    if j == "**":
-                        CalculatedNumber = FirstNumber ** SecondNumber
-                    elif j == "~":
-                        CalculatedNumber = ~ int(SecondNumber)
-                        FirstNumberStartsAt = OperatorIndex
-                    elif j == "*":
-                        CalculatedNumber = FirstNumber * SecondNumber
-                    elif j == "/":
-                        CalculatedNumber = FirstNumber / SecondNumber
-                    elif j == "//":
-                        CalculatedNumber = FirstNumber // SecondNumber
-                    elif j == "%":
-                        CalculatedNumber = FirstNumber % SecondNumber
-                    elif j == "+":
-                        CalculatedNumber = FirstNumber + SecondNumber
-                    elif j == "-":
-                        CalculatedNumber = FirstNumber - SecondNumber
-                    elif j == "<<":
-                        CalculatedNumber = int(FirstNumber) << int(SecondNumber)
-                    elif j == ">>":
-                        CalculatedNumber = int(FirstNumber) >> int(SecondNumber)
-                    elif j == "&":
-                        CalculatedNumber = int(FirstNumber) & int(SecondNumber)
-                    elif j == "|":
-                        CalculatedNumber = int(FirstNumber) | int(SecondNumber)
-                    elif j == "^":
-                        CalculatedNumber = int(FirstNumber) ^ int(SecondNumber)
+        while "~" in self.InputString:
+            self.validatePlusMinus()
+            OperatorSymbolsCount = 1
+            OperatorIndex = self.InputString.rfind("~")
+# From the end to calculate inversion sequences.
+            SecondNumberEndsAt = where2NumberEnds(self.InputString, OperatorIndex, OperatorSymbolsCount)
+            SecondNumber = int(self.InputString[(OperatorIndex + OperatorSymbolsCount):SecondNumberEndsAt])
+            CalculationResult = str(~ SecondNumber)
+            self.InputString = self.InputString.replace(self.InputString[OperatorIndex:SecondNumberEndsAt], CalculationResult)
 
-                    self.InputString = self.InputString.replace(self.InputString[FirstNumberStartsAt:SecondNumberEndsAt], str(CalculatedNumber))
+        while any(Operator in self.InputString for Operator in ("*", "/", "%")):
+            self.validatePlusMinus()
+            OperatorsDict = {
+                "*": self.InputString.find("*"),
+                "/": self.InputString.find("/"),
+                "%": self.InputString.find("%")}
+            OperatorIndex = max(OperatorsDict.values())
+            for i in OperatorsDict.keys():
+                if (OperatorsDict[i] == OperatorIndex):
+                    Operator = i
+            if self.InputString[OperatorIndex + 1] == "/":
+                Operator = "//"
+                OperatorSymbolsCount = 2
+            else:
+                OperatorSymbolsCount = 1
+            FirstNumberStartsAt = where1NumberStarts(self.InputString, OperatorIndex)
+            SecondNumberEndsAt = where2NumberEnds(self.InputString, OperatorIndex, OperatorSymbolsCount)
+            FirstNumber = float(self.InputString[FirstNumberStartsAt:OperatorIndex])
+            SecondNumber = float(self.InputString[(OperatorIndex + OperatorSymbolsCount):SecondNumberEndsAt])
+            if Operator == "*":
+                CalculatedNumber = FirstNumber * SecondNumber
+            elif Operator == "/":
+                CalculatedNumber = FirstNumber / SecondNumber
+            elif Operator == "//":
+                CalculatedNumber = FirstNumber // SecondNumber
+            elif Operator == "%":
+                CalculatedNumber = FirstNumber % SecondNumber
+            CalculationResult = str(CalculatedNumber)
+            self.InputString = self.InputString.replace(self.InputString[FirstNumberStartsAt:SecondNumberEndsAt], CalculationResult)
 
-#===============================================================#
+        while (any(Operator in self.InputString for Operator in ("+", "-"))) and not (isItANumber(self.InputString)):
+            self.validatePlusMinus()
+            OperatorsDict = {
+                "+": (self.InputString[1:].find("+") +1),
+                "-": (self.InputString[1:].find("-") +1)}
+# '1:' & '+1' to pass an unary sign.
+            OperatorIndex = max(OperatorsDict.values())
+            for i in OperatorsDict.keys():
+                if (OperatorsDict[i] == OperatorIndex):
+                    Operator = i
+            OperatorSymbolsCount = 1
+            FirstNumberStartsAt = where1NumberStarts(self.InputString, OperatorIndex)
+            SecondNumberEndsAt = where2NumberEnds(self.InputString, OperatorIndex, OperatorSymbolsCount)
+            FirstNumber = float(self.InputString[FirstNumberStartsAt:OperatorIndex])
+            SecondNumber = float(self.InputString[(OperatorIndex + OperatorSymbolsCount):SecondNumberEndsAt])
+            if Operator == "+":
+                CalculatedNumber = FirstNumber + SecondNumber
+            elif Operator == "-":
+                CalculatedNumber = FirstNumber - SecondNumber
+            CalculationResult = str(CalculatedNumber)
+            self.InputString = self.InputString.replace(self.InputString[FirstNumberStartsAt:SecondNumberEndsAt], CalculationResult)
+
+        while any(Operator in self.InputString for Operator in ("<<", ">>")):
+            self.validatePlusMinus()
+            OperatorsDict = {
+                "<<": self.InputString.find("<<"),
+                ">>": self.InputString.find(">>")}
+            OperatorIndex = max(OperatorsDict.values())
+            for i in OperatorsDict.keys():
+                if (OperatorsDict[i] == OperatorIndex):
+                    Operator = i
+            OperatorSymbolsCount = 2
+            FirstNumberStartsAt = where1NumberStarts(self.InputString, OperatorIndex)
+            SecondNumberEndsAt = where2NumberEnds(self.InputString, OperatorIndex, OperatorSymbolsCount)
+            FirstNumber = int(self.InputString[FirstNumberStartsAt:OperatorIndex])
+            SecondNumber = int(self.InputString[(OperatorIndex + OperatorSymbolsCount):SecondNumberEndsAt])
+            if Operator == "<<":
+                CalculatedNumber = FirstNumber << SecondNumber
+            elif Operator == ">>":
+                CalculatedNumber = FirstNumber >> SecondNumber
+            CalculationResult = str(CalculatedNumber)
+            self.InputString = self.InputString.replace(self.InputString[FirstNumberStartsAt:SecondNumberEndsAt], CalculationResult)
+
+        while "&" in self.InputString:
+            self.validatePlusMinus()
+            OperatorSymbolsCount = 1
+            OperatorIndex = self.InputString.find("&")
+            FirstNumberStartsAt = where1NumberStarts(self.InputString, OperatorIndex)
+            SecondNumberEndsAt = where2NumberEnds(self.InputString, OperatorIndex, OperatorSymbolsCount)
+            FirstNumber = int(self.InputString[FirstNumberStartsAt:OperatorIndex])
+            SecondNumber = int(self.InputString[(OperatorIndex + OperatorSymbolsCount):SecondNumberEndsAt])
+            CalculationResult = str(FirstNumber & SecondNumber)
+            self.InputString = self.InputString.replace(self.InputString[FirstNumberStartsAt:SecondNumberEndsAt], CalculationResult)
+
+        while any(Operator in self.InputString for Operator in ("^", "|")):
+            self.validatePlusMinus()
+            OperatorsDict = {
+                "^": self.InputString.find("^"),
+                "|": self.InputString.find("|")}
+            OperatorIndex = max(OperatorsDict.values())
+            for i in OperatorsDict.keys():
+                if (OperatorsDict[i] == OperatorIndex):
+                    Operator = i
+            OperatorSymbolsCount = 1
+            FirstNumberStartsAt = where1NumberStarts(self.InputString, OperatorIndex)
+            SecondNumberEndsAt = where2NumberEnds(self.InputString, OperatorIndex, OperatorSymbolsCount)
+            FirstNumber = int(self.InputString[FirstNumberStartsAt:OperatorIndex])
+            SecondNumber = int(self.InputString[(OperatorIndex + OperatorSymbolsCount):SecondNumberEndsAt])
+            if Operator == "^":
+                CalculatedNumber = FirstNumber ^ SecondNumber
+            elif Operator == "|":
+                CalculatedNumber = FirstNumber | SecondNumber
+            CalculationResult = str(CalculatedNumber)
+            self.InputString = self.InputString.replace(self.InputString[FirstNumberStartsAt:SecondNumberEndsAt], CalculationResult)
+            
+ #===============================================================#
 
     def calculateIt(self):
         '''Calculates any (the description is a lie) input string expression to output string value.'''
