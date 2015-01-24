@@ -90,3 +90,13 @@ def doesItContainFunction(InputString, MustEndWith = False):
             i += 1
 
     return(OutputBoolean)
+
+
+def makeIntOrDie(InputString):
+    '''Returns integer or raises exception.'''
+    TempFloat = float(InputString)
+    OutputInt = int(TempFloat)
+    if TempFloat == OutputInt:
+        return(OutputInt)
+    else:
+        raise ValueError("Float bitwise operand: " + InputString + ".")

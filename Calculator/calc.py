@@ -80,7 +80,7 @@ class Calculator(Validator):
             OperatorIndex = self.InputString.rfind("~")
 # From the end to calculate inversion sequences.
             SecondNumberEndsAt = where2NumberEnds(self.InputString, OperatorIndex, OperatorSymbolsCount)
-            SecondNumber = int(self.InputString[(OperatorIndex + OperatorSymbolsCount):SecondNumberEndsAt])
+            SecondNumber = makeIntOrDie(self.InputString[(OperatorIndex + OperatorSymbolsCount):SecondNumberEndsAt])
             CalculationResult = str(~ SecondNumber)
             self.InputString = self.InputString.replace(self.InputString[OperatorIndex:SecondNumberEndsAt], CalculationResult)
 
@@ -148,8 +148,8 @@ class Calculator(Validator):
             OperatorSymbolsCount = 2
             FirstNumberStartsAt = where1NumberStarts(self.InputString, OperatorIndex)
             SecondNumberEndsAt = where2NumberEnds(self.InputString, OperatorIndex, OperatorSymbolsCount)
-            FirstNumber = int(self.InputString[FirstNumberStartsAt:OperatorIndex])
-            SecondNumber = int(self.InputString[(OperatorIndex + OperatorSymbolsCount):SecondNumberEndsAt])
+            FirstNumber = makeIntOrDie(self.InputString[FirstNumberStartsAt:OperatorIndex])
+            SecondNumber = makeIntOrDie(self.InputString[(OperatorIndex + OperatorSymbolsCount):SecondNumberEndsAt])
             if Operator == "<<":
                 CalculatedNumber = FirstNumber << SecondNumber
             elif Operator == ">>":
@@ -163,8 +163,8 @@ class Calculator(Validator):
             OperatorIndex = self.InputString.find("&")
             FirstNumberStartsAt = where1NumberStarts(self.InputString, OperatorIndex)
             SecondNumberEndsAt = where2NumberEnds(self.InputString, OperatorIndex, OperatorSymbolsCount)
-            FirstNumber = int(self.InputString[FirstNumberStartsAt:OperatorIndex])
-            SecondNumber = int(self.InputString[(OperatorIndex + OperatorSymbolsCount):SecondNumberEndsAt])
+            FirstNumber = makeIntOrDie(self.InputString[FirstNumberStartsAt:OperatorIndex])
+            SecondNumber = makeIntOrDie(self.InputString[(OperatorIndex + OperatorSymbolsCount):SecondNumberEndsAt])
             CalculationResult = str(FirstNumber & SecondNumber)
             self.InputString = self.InputString.replace(self.InputString[FirstNumberStartsAt:SecondNumberEndsAt], CalculationResult)
 
@@ -180,8 +180,8 @@ class Calculator(Validator):
             OperatorSymbolsCount = 1
             FirstNumberStartsAt = where1NumberStarts(self.InputString, OperatorIndex)
             SecondNumberEndsAt = where2NumberEnds(self.InputString, OperatorIndex, OperatorSymbolsCount)
-            FirstNumber = int(self.InputString[FirstNumberStartsAt:OperatorIndex])
-            SecondNumber = int(self.InputString[(OperatorIndex + OperatorSymbolsCount):SecondNumberEndsAt])
+            FirstNumber = makeIntOrDie(self.InputString[FirstNumberStartsAt:OperatorIndex])
+            SecondNumber = makeIntOrDie(self.InputString[(OperatorIndex + OperatorSymbolsCount):SecondNumberEndsAt])
             if Operator == "^":
                 CalculatedNumber = FirstNumber ^ SecondNumber
             elif Operator == "|":

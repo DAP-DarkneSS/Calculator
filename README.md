@@ -27,6 +27,5 @@ DONE
  * file from shell
 
 TODO
- * bitwise float exception
  * tests
  
