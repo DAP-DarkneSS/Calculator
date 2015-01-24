@@ -38,9 +38,13 @@ class Calculator(Validator):
         for j in OperatorsList:
             self.validatePlusMinus()
 
-            if not isItANumber(self.InputString, OperatorsList):
-                while j in self.InputString and not ((self.InputString[0] == j) and (self.InputString.count(j) == 1)):
-                    FirstNumberStartsAt = SecondNumberEndsAt = OperatorIndex = (self.InputString[1:].find(j) + 1)
+            if not isItANumber(self.InputString):
+                while j in self.InputString and not ((self.InputString[0] == j) and (self.InputString.count(j) == 1) and (j in ("-", "+"))):
+                    if j in ("-", "+"):
+                        StartIndex = 1
+                    else:
+                        StartIndex = 0
+                    FirstNumberStartsAt = SecondNumberEndsAt = OperatorIndex = (self.InputString[StartIndex:].find(j) + StartIndex)
 
                     i = OperatorIndex + len(j) + 1
 # +1 to pass unary +/- sign.
@@ -51,7 +55,7 @@ class Calculator(Validator):
                             i += 1
 
                     i = OperatorIndex - 1
-                    while FirstNumberStartsAt == OperatorIndex:
+                    while (FirstNumberStartsAt == OperatorIndex and j != "~"):
                         if i == -1:
                             FirstNumberStartsAt = i + 1
                         elif self.InputString[i] in OperatorsList:
@@ -62,10 +66,14 @@ class Calculator(Validator):
                         else:
                             i -= 1
 
-                    FirstNumber = float(self.InputString[FirstNumberStartsAt:OperatorIndex])
+                    if j != "~":
+                        FirstNumber = float(self.InputString[FirstNumberStartsAt:OperatorIndex])
                     SecondNumber = float(self.InputString[(OperatorIndex + len(j)):SecondNumberEndsAt])
                     if j == "**":
                         CalculatedNumber = FirstNumber ** SecondNumber
+                    elif j == "~":
+                        CalculatedNumber = ~ int(SecondNumber)
+                        FirstNumberStartsAt = OperatorIndex
                     elif j == "*":
                         CalculatedNumber = FirstNumber * SecondNumber
                     elif j == "/":
@@ -227,7 +235,6 @@ class Calculator(Validator):
                     OpeningIndex -= 5
 
             else:
-                StartIndex = OpeningIndex
                 TempString = TempList[0]
 
             self.InputString = self.InputString.replace(self.InputString[OpeningIndex:(ClosingIndex + 1)], TempString)

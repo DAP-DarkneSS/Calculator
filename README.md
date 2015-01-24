@@ -20,10 +20,14 @@ DONE
    + bitwise and
    + bitwise or
    + bitwise exclusive or
-   + functions from math with 1 argument
+   + functions from math
+   + bitwise inversion
  * OOP
  * file calculation
  * file from shell
 
 TODO
  * correct operator precedence
+ * bitwise float exception
+ * tests
+ 

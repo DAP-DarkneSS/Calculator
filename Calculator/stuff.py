@@ -45,11 +45,11 @@ MathFunctionsStringsList = ("abs", "acos", "acosh", "asin",
 
 
 global OperatorsList
-OperatorsList = ("**", "*", "//", "/", "%", "+",
+OperatorsList = ("**", "~", "*", "//", "/", "%", "+",
                  "-", "<<", ">>", "&", "|", "^")
 
 
-def isItANumber(InputString, OperatorsList):
+def isItANumber(InputString):
     '''Returns True if input string is a number.'''
     OutputBoolean = True
     i = 0
